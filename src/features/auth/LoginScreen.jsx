@@ -26,14 +26,19 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
     setIsLoading(true);
 
     // Small delay to simulate verification and show feedback
-    setTimeout(() => {
-      const res = localStorageService.loginUser(username, password);
-      setIsLoading(false);
-      if (res.success) {
-        setLoggedInUser(res.user);
-        setShowWelcomePopup(true);
-      } else {
-        setError(res.message);
+    setTimeout(async () => {
+      try {
+        const res = await localStorageService.loginUser(username, password);
+        setIsLoading(false);
+        if (res.success) {
+          setLoggedInUser(res.user);
+          setShowWelcomePopup(true);
+        } else {
+          setError(res.message);
+        }
+      } catch (err) {
+        setIsLoading(false);
+        setError('Gagal terhubung ke server database.');
       }
     }, 600);
   };

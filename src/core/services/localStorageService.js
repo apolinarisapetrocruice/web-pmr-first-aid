@@ -4,6 +4,8 @@ import {
   quizQuestions as defaultQuizzes,
   emergencyContacts as defaultContacts 
 } from '../../data/dummyData';
+import { db } from './firebase';
+import { ref, set, get, child } from 'firebase/database';
 
 const KEY_PROFILE = 'user_profile';
 const KEY_EMERGENCY_CONTACTS = 'emergency_contacts';
@@ -21,6 +23,142 @@ const defaultProfile = {
   readMaterials: [], // materialIds
   unlockedAchievements: [], // achievementIds
 };
+
+// Firebase Sync Helpers
+const promiseTimeout = (promise, ms) => {
+  let timeout = new Promise((_, reject) => {
+    let id = setTimeout(() => {
+      clearTimeout(id);
+      reject(new Error('TIMEOUT'));
+    }, ms);
+  });
+  return Promise.race([promise, timeout]);
+};
+
+async function syncFromFirebase(username) {
+  try {
+    const dbRef = ref(db);
+    
+    // 0. Sync Session User
+    const userSnap = await promiseTimeout(get(child(dbRef, `users/${username}`)), 3000);
+    if (userSnap.exists()) {
+      localStorage.setItem('session_user', JSON.stringify(userSnap.val()));
+    }
+
+    // 1. Profile
+    const profileSnap = await promiseTimeout(get(child(dbRef, `profiles/${username}`)), 3000);
+    if (profileSnap.exists()) {
+      localStorage.setItem(`user_profile_${username}`, JSON.stringify(profileSnap.val()));
+    }
+    
+    // 2. Emergency Contacts
+    const contactsSnap = await promiseTimeout(get(child(dbRef, `emergency_contacts/${username}`)), 3000);
+    if (contactsSnap.exists()) {
+      localStorage.setItem(KEY_EMERGENCY_CONTACTS, JSON.stringify(contactsSnap.val()));
+    }
+    
+    // 3. Read Subtopics
+    const subtopicsSnap = await promiseTimeout(get(child(dbRef, `read_subtopics/${username}`)), 3000);
+    if (subtopicsSnap.exists()) {
+      const subtopicsObj = subtopicsSnap.val();
+      Object.keys(subtopicsObj).forEach(materialId => {
+        localStorage.setItem(`read_subtopics_${materialId}`, JSON.stringify(subtopicsObj[materialId]));
+      });
+    }
+    
+    window.dispatchEvent(new Event('auth-changed'));
+  } catch (error) {
+    console.warn("Firebase sync failed, using cached local data", error);
+  }
+}
+
+async function syncGlobalDataFromFirebase() {
+  try {
+    const dbRef = ref(db);
+    
+    const materialsSnap = await promiseTimeout(get(child(dbRef, 'learning_materials')), 3000);
+    if (materialsSnap.exists()) {
+      localStorage.setItem(KEY_LEARNING_MATERIALS, JSON.stringify(materialsSnap.val()));
+    }
+    
+    const videosSnap = await promiseTimeout(get(child(dbRef, 'practice_videos')), 3000);
+    if (videosSnap.exists()) {
+      localStorage.setItem(KEY_PRACTICE_VIDEOS, JSON.stringify(videosSnap.val()));
+    }
+    
+    const quizzesSnap = await promiseTimeout(get(child(dbRef, 'quiz_questions')), 3000);
+    if (quizzesSnap.exists()) {
+      localStorage.setItem(KEY_QUIZ_QUESTIONS, JSON.stringify(quizzesSnap.val()));
+    }
+    
+    window.dispatchEvent(new Event('auth-changed'));
+  } catch (e) {
+    console.warn("Global data sync failed, using local fallback", e);
+  }
+}
+
+async function syncAllUsersFromFirebase() {
+  try {
+    const dbRef = ref(db);
+    const usersSnap = await promiseTimeout(get(child(dbRef, 'users')), 3000);
+    if (usersSnap.exists()) {
+      const usersObj = usersSnap.val();
+      const usersList = Object.values(usersObj);
+      localStorage.setItem(KEY_USERS, JSON.stringify(usersList));
+      window.dispatchEvent(new Event('auth-changed'));
+    }
+  } catch (e) {
+    console.warn("Failed to sync users list from Firebase", e);
+  }
+}
+
+function syncProfileToFirebase(username, profile) {
+  try {
+    set(ref(db, `profiles/${username}`), profile);
+  } catch (e) {
+    console.error("Failed to sync profile to Firebase", e);
+  }
+}
+
+function syncContactsToFirebase(username, contacts) {
+  try {
+    set(ref(db, `emergency_contacts/${username}`), contacts);
+  } catch (e) {
+    console.error("Failed to sync contacts to Firebase", e);
+  }
+}
+
+function syncSubtopicsToFirebase(username, materialId, subtopics) {
+  try {
+    set(ref(db, `read_subtopics/${username}/${materialId}`), subtopics);
+  } catch (e) {
+    console.error("Failed to sync subtopics to Firebase", e);
+  }
+}
+
+function syncGlobalMaterialsToFirebase(materials) {
+  try {
+    set(ref(db, 'learning_materials'), materials);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function syncGlobalVideosToFirebase(videos) {
+  try {
+    set(ref(db, 'practice_videos'), videos);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function syncGlobalQuizzesToFirebase(quizzes) {
+  try {
+    set(ref(db, 'quiz_questions'), quizzes);
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 export const localStorageService = {
   getCurrentUser() {
@@ -69,6 +207,9 @@ export const localStorageService = {
         this.saveUsers(users);
       }
     }
+
+    // Sync to Firebase background
+    syncProfileToFirebase(currentUser.username, profile);
   },
 
   addXp(amount) {
@@ -112,6 +253,10 @@ export const localStorageService = {
       current.push(subtopicTitle);
       localStorage.setItem(key, JSON.stringify(current));
     }
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      syncSubtopicsToFirebase(currentUser.username, materialId, current);
+    }
   },
 
   resetMaterialProgress(materialId) {
@@ -121,6 +266,11 @@ export const localStorageService = {
     const profile = this.getUserProfile();
     profile.readMaterials = profile.readMaterials.filter(id => id !== materialId);
     this.saveUserProfile(profile);
+
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      syncSubtopicsToFirebase(currentUser.username, materialId, null);
+    }
   },
 
   saveQuizResult(item) {
@@ -271,6 +421,10 @@ export const localStorageService = {
 
   saveEmergencyContacts(contacts) {
     localStorage.setItem(KEY_EMERGENCY_CONTACTS, JSON.stringify(contacts));
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      syncContactsToFirebase(currentUser.username, contacts);
+    }
   },
 
   addEmergencyContact(contact) {
@@ -333,69 +487,114 @@ export const localStorageService = {
     localStorage.setItem(KEY_USERS, JSON.stringify(users));
   },
 
-  registerUser(name, username, password) {
-    const users = this.getUsers();
+  async registerUser(name, username, password) {
     const cleanUsername = username.trim().toLowerCase();
+    
+    try {
+      const dbRef = ref(db);
+      const snapshot = await promiseTimeout(get(child(dbRef, `users/${cleanUsername}`)), 3000);
+      if (snapshot.exists()) {
+        return { success: false, message: 'Username atau email sudah digunakan.' };
+      }
+      
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        name: name.trim(),
+        username: username.trim(),
+        password: password,
+        role: 'student'
+      };
 
-    const exists = users.some(u => u.username.toLowerCase() === cleanUsername);
-    if (exists) {
-      return { success: false, message: 'Username atau email sudah digunakan.' };
+      await set(ref(db, `users/${cleanUsername}`), newUser);
+
+      const newProfile = {
+        ...defaultProfile,
+        name: newUser.name,
+        role: 'PMR Madya'
+      };
+      await set(ref(db, `profiles/${cleanUsername}`), newProfile);
+
+      const localUsers = this.getUsers();
+      if (!localUsers.some(u => u.username.toLowerCase() === cleanUsername)) {
+        localUsers.push(newUser);
+        this.saveUsers(localUsers);
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Firebase registration error, falling back to local storage", error);
+      const users = this.getUsers();
+      const exists = users.some(u => u.username.toLowerCase() === cleanUsername);
+      if (exists) {
+        return { success: false, message: 'Username atau email sudah digunakan.' };
+      }
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        name: name.trim(),
+        username: username.trim(),
+        password: password,
+        role: 'student'
+      };
+      users.push(newUser);
+      this.saveUsers(users);
+
+      const profileKey = `user_profile_${newUser.username}`;
+      const newProfile = { ...defaultProfile, name: newUser.name, role: 'PMR Madya' };
+      localStorage.setItem(profileKey, JSON.stringify(newProfile));
+
+      return { success: true };
     }
-
-    const newUser = {
-      id: 'usr_' + Date.now(),
-      name: name.trim(),
-      username: username.trim(),
-      password: password,
-      role: 'student'
-    };
-
-    users.push(newUser);
-    this.saveUsers(users);
-
-    // Initialize profile
-    const profileKey = `user_profile_${newUser.username}`;
-    const newProfile = {
-      ...defaultProfile,
-      name: newUser.name,
-      role: 'PMR Madya'
-    };
-    localStorage.setItem(profileKey, JSON.stringify(newProfile));
-
-    return { success: true };
   },
 
-  loginUser(username, password) {
-    const users = this.getUsers();
+  async loginUser(username, password) {
     const cleanUsername = username.trim().toLowerCase();
     const cleanPassword = password.trim();
 
-    // Fallback/Force Admin: Always succeed for admin / admin123 (handling trailing/leading spaces)
     if (cleanUsername === 'admin' && cleanPassword === 'admin123') {
-      let foundAdmin = users.find(u => u.username.toLowerCase() === 'admin');
-      if (!foundAdmin) {
-        foundAdmin = {
-          id: 'usr_admin',
-          name: 'Admin PMR',
-          username: 'admin',
-          password: 'admin123',
-          role: 'admin'
-        };
-        users.push(foundAdmin);
-        this.saveUsers(users);
-      } else if (foundAdmin.password !== 'admin123') {
-        foundAdmin.password = 'admin123';
-        this.saveUsers(users);
+      const adminUser = {
+        id: 'usr_admin',
+        name: 'Admin PMR',
+        username: 'admin',
+        password: 'admin123',
+        role: 'admin'
+      };
+      try {
+        const dbRef = ref(db);
+        const snapshot = await promiseTimeout(get(child(dbRef, `users/admin`)), 3000);
+        if (!snapshot.exists()) {
+          await set(ref(db, `users/admin`), adminUser);
+        }
+        await syncAllUsersFromFirebase();
+      } catch (e) {
+        console.warn("Failed to check admin in Firebase", e);
       }
-      return { success: true, user: foundAdmin };
+      return { success: true, user: adminUser };
     }
 
-    const foundUser = users.find(u => u.username.toLowerCase() === cleanUsername);
-    if (!foundUser || foundUser.password !== password) {
-      return { success: false, message: 'Username atau password yang Anda masukkan tidak sesuai.' };
-    }
+    try {
+      const dbRef = ref(db);
+      const snapshot = await promiseTimeout(get(child(dbRef, `users/${cleanUsername}`)), 3000);
+      if (!snapshot.exists()) {
+        return { success: false, message: 'Username atau password yang Anda masukkan tidak sesuai.' };
+      }
 
-    return { success: true, user: foundUser };
+      const foundUser = snapshot.val();
+      if (foundUser.password !== password) {
+        return { success: false, message: 'Username atau password yang Anda masukkan tidak sesuai.' };
+      }
+
+      await syncFromFirebase(cleanUsername);
+
+      return { success: true, user: foundUser };
+    } catch (error) {
+      console.error("Firebase login error, checking local fallback", error);
+      const users = this.getUsers();
+      const foundUser = users.find(u => u.username.toLowerCase() === cleanUsername);
+      if (!foundUser || foundUser.password !== password) {
+        return { success: false, message: 'Username atau password yang Anda masukkan tidak sesuai.' };
+      }
+      return { success: true, user: foundUser };
+    }
   },
 
   setSessionUser(user) {
@@ -424,6 +623,7 @@ export const localStorageService = {
 
   saveLearningMaterials(materials) {
     localStorage.setItem(KEY_LEARNING_MATERIALS, JSON.stringify(materials));
+    syncGlobalMaterialsToFirebase(materials);
   },
 
   addLearningMaterial(material) {
@@ -463,6 +663,7 @@ export const localStorageService = {
 
   savePracticeVideos(videos) {
     localStorage.setItem(KEY_PRACTICE_VIDEOS, JSON.stringify(videos));
+    syncGlobalVideosToFirebase(videos);
   },
 
   addPracticeVideo(video) {
@@ -502,6 +703,7 @@ export const localStorageService = {
 
   saveQuizQuestions(questions) {
     localStorage.setItem(KEY_QUIZ_QUESTIONS, JSON.stringify(questions));
+    syncGlobalQuizzesToFirebase(questions);
   },
 
   addQuizQuestion(question) {
@@ -525,3 +727,15 @@ export const localStorageService = {
     this.saveQuizQuestions(filtered);
   }
 };
+
+// Start background sync on load
+setTimeout(() => {
+  syncGlobalDataFromFirebase();
+  const currentUser = localStorageService.getCurrentUser();
+  if (currentUser) {
+    syncFromFirebase(currentUser.username);
+    if (currentUser.role === 'admin') {
+      syncAllUsersFromFirebase();
+    }
+  }
+}, 500);

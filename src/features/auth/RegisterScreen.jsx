@@ -38,17 +38,22 @@ export default function RegisterScreen({ onRegisterSuccess, onGoToLogin }) {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = localStorageService.registerUser(name, username, password);
-      setIsLoading(false);
-      
-      if (res.success) {
-        setSuccessMsg('Akun berhasil dibuat! Mengalihkan ke halaman login...');
-        setTimeout(() => {
-          onRegisterSuccess();
-        }, 1500);
-      } else {
-        setError(res.message);
+    setTimeout(async () => {
+      try {
+        const res = await localStorageService.registerUser(name, username, password);
+        setIsLoading(false);
+        
+        if (res.success) {
+          setSuccessMsg('Akun berhasil dibuat! Mengalihkan ke halaman login...');
+          setTimeout(() => {
+            onRegisterSuccess();
+          }, 1500);
+        } else {
+          setError(res.message);
+        }
+      } catch (err) {
+        setIsLoading(false);
+        setError('Gagal menghubungkan ke database.');
       }
     }, 600);
   };
