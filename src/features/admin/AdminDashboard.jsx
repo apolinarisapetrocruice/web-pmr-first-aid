@@ -405,13 +405,11 @@ export default function AdminDashboard({ onLogout }) {
       {/* SIDEBAR */}
       <aside className="admin-sidebar">
         <div className="admin-logo">
-          <div className="logo-box admin-logo-box">
-            <img
-              src="/assets/images/logo.png"
-              alt="Logo PMI"
-              className="brand-logo"
-            />
-          </div>
+          <img
+            src="/assets/images/logo.png"
+            alt="Logo PMI"
+            className="brand-logo"
+          />
           <div>
             <h1 className="logo-title">PMR ADMIN</h1>
             <p className="logo-subtitle">Kontrol Portal Pembelajaran</p>

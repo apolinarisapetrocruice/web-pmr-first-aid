@@ -89,13 +89,11 @@ export default function Layout() {
       {/* DESKTOP SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <div className="logo-box">
-            <img
-              src="/assets/images/logo2.png"
-              alt="Logo PMI"
-              className="brand-logo"
-            />
-          </div>
+          <img
+            src="/assets/images/logo2.png"
+            alt="Logo PMI"
+            className="brand-logo"
+          />
           <div>
             <h1 className="logo-title">PMR FIRST AID</h1>
             <p className="logo-subtitle">Palang Merah Remaja</p>
