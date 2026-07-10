@@ -1,0 +1,64 @@
+.mitigation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mitigation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.mitigation-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+  border-left: 6px solid var(--mitigation-green);
+  gap: 12px;
+}
+
+.mitigation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--mitigation-green);
+}
+
+.mitigation-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mitigation-card-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.mitigation-card-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-black);
+}
+
+.mitigation-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .mitigation-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}

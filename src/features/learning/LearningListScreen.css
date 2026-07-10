@@ -1,0 +1,130 @@
+.learning-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.learning-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.material-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+.material-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--learning-blue);
+}
+
+.material-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.material-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-badge.read {
+  background-color: var(--mitigation-soft-green);
+  color: var(--mitigation-green);
+}
+
+.status-badge.unread {
+  background-color: var(--border-gray);
+  color: var(--text-gray);
+}
+
+.material-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--text-black);
+}
+
+.material-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  font-weight: 600;
+}
+
+.material-progress-section {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-gray);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.progress-bar-container {
+  height: 6px;
+  background-color: var(--border-gray);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--learning-blue);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.progress-bar-fill.complete {
+  background-color: var(--mitigation-green);
+}
+
+@media (max-width: 1024px) {
+  .learning-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .learning-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}

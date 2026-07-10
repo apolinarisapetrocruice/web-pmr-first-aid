@@ -1,0 +1,224 @@
+.result-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.result-card-main {
+  width: 100%;
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card-main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary-red), var(--practice-orange));
+}
+
+.result-emoji {
+  font-size: 5rem;
+  line-height: 1;
+  animation: pulse 1s infinite alternate;
+}
+
+.result-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--text-black);
+}
+
+.result-score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  background-color: var(--cream-bg);
+  border: 4px solid var(--border-gray);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.score-num {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--primary-red);
+  line-height: 1.1;
+}
+
+.score-denom {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.result-predikat-tag {
+  padding: 6px 20px;
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.result-predikat-tag.istimewa, .result-predikat-tag.sangat-baik {
+  background-color: var(--mitigation-soft-green);
+  color: var(--mitigation-green);
+}
+
+.result-predikat-tag.baik, .result-predikat-tag.cukup {
+  background-color: var(--practice-soft-orange);
+  color: var(--practice-orange);
+}
+
+.result-predikat-tag.kurang {
+  background-color: var(--emergency-soft-red);
+  color: var(--emergency-red);
+}
+
+.result-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-gray);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-black);
+}
+
+.stat-lbl {
+  font-size: 0.75rem;
+  color: var(--text-gray);
+  font-weight: 600;
+}
+
+/* Badge Award Card */
+.badge-award-card {
+  width: 100%;
+  background: linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%);
+  border: 1.5px solid #FBC02D;
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-award-icon {
+  width: 48px;
+  height: 48px;
+  background-color: #FBC02D;
+  color: white;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(251, 192, 45, 0.3);
+}
+
+/* Review Accordion Panel */
+.review-header {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-top: 12px;
+  width: 100%;
+  text-align: left;
+}
+
+.review-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.review-item {
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.review-question-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-black);
+  line-height: 1.4;
+}
+
+.review-option {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-option.correct {
+  background-color: var(--mitigation-soft-green);
+  border: 1px solid var(--mitigation-green);
+  color: var(--mitigation-green);
+}
+
+.review-option.incorrect {
+  background-color: var(--emergency-soft-red);
+  border: 1px solid var(--emergency-red);
+  color: var(--emergency-red);
+}
+
+.review-option.neutral {
+  background-color: var(--cream-bg);
+  border: 1px dashed var(--border-gray);
+  color: var(--text-gray);
+}
+
+.review-explanation {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+  background-color: #FFFDF5;
+  border-left: 4px solid #FFD54F;
+  padding: 10px 14px;
+  border-radius: 4px;
+  line-height: 1.4;
+  margin-top: 4px;
+}

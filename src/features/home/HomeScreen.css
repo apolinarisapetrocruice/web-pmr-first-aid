@@ -1,0 +1,151 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-welcome-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-welcome-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--text-black);
+}
+
+.home-welcome-subtitle {
+  font-size: 1rem;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+.home-banner-card {
+  position: relative;
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, #FFF1F0 0%, #FFFFFF 100%);
+  border-left: 6px solid var(--primary-red);
+}
+
+.home-banner-text {
+  max-width: 60%;
+}
+
+.home-banner-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--dark-red);
+  margin-bottom: 6px;
+}
+
+.home-banner-desc {
+  font-size: 0.9rem;
+  color: var(--text-black);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.home-banner-image {
+  height: 90%;
+  max-width: 35%;
+  object-fit: contain;
+}
+
+.home-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.menu-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: var(--surface-white);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-sm);
+}
+
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-red);
+}
+
+.menu-icon-container {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.menu-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-black);
+}
+
+.menu-desc {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .home-banner-card {
+    height: 150px;
+    padding: 0 20px;
+  }
+
+  .home-banner-title {
+    font-size: 1.25rem;
+  }
+
+  .home-banner-desc {
+    font-size: 0.75rem;
+  }
+
+  .home-banner-image {
+    display: none;
+    /* Hide complex image on small screen to save space */
+  }
+
+  .home-banner-text {
+    max-width: 100%;
+  }
+
+  .home-menu-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .menu-card {
+    padding: 16px;
+  }
+}
