@@ -63,9 +63,13 @@ export default function RegisterScreen({ onRegisterSuccess, onGoToLogin }) {
       <div className="auth-card-wrapper fade-in">
         <div className="auth-brand-header">
           <div className="brand-logo-circle">
-            <ShieldAlert size={36} color="var(--surface-white)" />
+            <img
+              src="/assets/images/logo.png"
+              alt="Logo PMI"
+              className="brand-logo"
+            />
           </div>
-          <h1 className="brand-title">PMR FIRST AID</h1>
+          <p className="brand-title">PMR FIRST AID</p>
           <p className="brand-subtitle">Palang Merah Remaja Indonesia</p>
         </div>
 
