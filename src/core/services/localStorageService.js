@@ -426,7 +426,13 @@ export const localStorageService = {
     const data = localStorage.getItem(KEY_EMERGENCY_CONTACTS);
     if (!data) return defaultContacts;
     try {
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        return Object.values(parsed); // Convert Firebase object back to array
+      }
+      return defaultContacts;
     } catch (_) {
       return defaultContacts;
     }
@@ -625,7 +631,13 @@ export const localStorageService = {
       return defaultMaterials;
     }
     try {
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        return Object.values(parsed);
+      }
+      return defaultMaterials;
     } catch (_) {
       return defaultMaterials;
     }
@@ -665,7 +677,13 @@ export const localStorageService = {
       return defaultVideos;
     }
     try {
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        return Object.values(parsed);
+      }
+      return defaultVideos;
     } catch (_) {
       return defaultVideos;
     }
@@ -705,7 +723,13 @@ export const localStorageService = {
       return defaultQuizzes;
     }
     try {
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        return Object.values(parsed);
+      }
+      return defaultQuizzes;
     } catch (_) {
       return defaultQuizzes;
     }
