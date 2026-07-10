@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  BookOpen, 
-  Activity, 
-  Phone, 
-  User, 
-  ShieldAlert, 
+import {
+  Home,
+  BookOpen,
+  Activity,
+  Phone,
+  User,
+  ShieldAlert,
   Award,
   Zap,
   LogOut
@@ -74,8 +74,8 @@ export default function Layout() {
             <p className="custom-popup-message">
               Anda akan keluar dari sistem PMR First Aid. Sampai jumpa kembali!
             </p>
-            <button 
-              className="custom-popup-btn" 
+            <button
+              className="custom-popup-btn"
               onClick={() => {
                 setShowLogoutPopup(false);
                 localStorageService.logoutUser();
@@ -90,7 +90,11 @@ export default function Layout() {
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-box">
-            <ShieldAlert size={24} />
+            <img
+              src="/assets/images/logo.png"
+              alt="Logo PMI"
+              className="brand-logo"
+            />
           </div>
           <div>
             <h1 className="logo-title">PMR FIRST AID</h1>
@@ -102,9 +106,9 @@ export default function Layout() {
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
-              <NavLink 
-                key={item.path} 
-                to={item.path} 
+              <NavLink
+                key={item.path}
+                to={item.path}
                 className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
               >
                 <Icon size={20} />
@@ -124,7 +128,7 @@ export default function Layout() {
               <Zap size={12} fill="var(--primary-red)" /> {currentXp} XP
             </p>
           </div>
-          <button 
+          <button
             onClick={() => {
               setShowLogoutPopup(true);
             }}
@@ -166,9 +170,9 @@ export default function Layout() {
           // Render only 5 icons on mobile bottom bar to maintain spacing
           if (item.name === 'Mitigasi') return null;
           return (
-            <NavLink 
-              key={item.path} 
-              to={item.path} 
+            <NavLink
+              key={item.path}
+              to={item.path}
               className={({ isActive }) => `bottom-nav-link ${isActive ? 'active' : ''}`}
             >
               <Icon size={20} />
