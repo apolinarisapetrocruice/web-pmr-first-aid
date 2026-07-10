@@ -100,15 +100,27 @@ async function syncGlobalDataFromFirebase() {
 async function syncAllUsersFromFirebase() {
   try {
     const dbRef = ref(db);
+    
+    // 1. Sync list of users
     const usersSnap = await promiseTimeout(get(child(dbRef, 'users')), 3000);
     if (usersSnap.exists()) {
       const usersObj = usersSnap.val();
       const usersList = Object.values(usersObj);
       localStorage.setItem(KEY_USERS, JSON.stringify(usersList));
-      window.dispatchEvent(new Event('auth-changed'));
     }
+    
+    // 2. Sync list of user profiles (to populate XP, quiz stats, etc. in Admin dashboard)
+    const profilesSnap = await promiseTimeout(get(child(dbRef, 'profiles')), 3000);
+    if (profilesSnap.exists()) {
+      const profilesObj = profilesSnap.val();
+      Object.keys(profilesObj).forEach(username => {
+        localStorage.setItem(`user_profile_${username}`, JSON.stringify(profilesObj[username]));
+      });
+    }
+    
+    window.dispatchEvent(new Event('auth-changed'));
   } catch (e) {
-    console.warn("Failed to sync users list from Firebase", e);
+    console.warn("Failed to sync users and profiles from Firebase", e);
   }
 }
 
