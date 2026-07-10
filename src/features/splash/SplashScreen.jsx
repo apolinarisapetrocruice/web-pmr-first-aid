@@ -29,7 +29,11 @@ export default function SplashScreen({ onFinish }) {
         <div className="splash-logo-container">
           <div className="splash-logo-glow"></div>
           <div className="splash-logo-box">
-            <ShieldAlert className="splash-logo-icon" size={48} />
+            <img
+              src="/assets/images/logo.png"
+              alt="Logo PMI"
+              className="brand-logo"
+            />
           </div>
         </div>
 

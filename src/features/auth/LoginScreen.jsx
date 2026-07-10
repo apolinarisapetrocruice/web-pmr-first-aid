@@ -74,7 +74,7 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
               className="brand-logo"
             />
           </div>
-          <h1 className="brand-title">PMR FIRST AID</h1>
+          <p className="brand-title">PMR FIRST AID</p>
           <p className="brand-subtitle">Palang Merah Remaja Indonesia</p>
         </div>
 
