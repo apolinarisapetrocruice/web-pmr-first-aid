@@ -427,12 +427,22 @@ export const localStorageService = {
     if (!data) return defaultContacts;
     try {
       const parsed = JSON.parse(data);
+      let list = [];
       if (Array.isArray(parsed)) {
-        return parsed;
+        list = parsed;
       } else if (parsed && typeof parsed === 'object') {
-        return Object.values(parsed); // Convert Firebase object back to array
+        list = Object.values(parsed);
+      } else {
+        return defaultContacts;
       }
-      return defaultContacts;
+      
+      // Defensively flatten nested arrays (handling legacy formats like [ [ {...} ] ])
+      const flattened = list.flat(Infinity);
+      
+      // Filter only valid contact objects
+      const valid = flattened.filter(c => c && typeof c === 'object' && c.serviceName && c.phoneNumber);
+      
+      return valid.length > 0 ? valid : defaultContacts;
     } catch (_) {
       return defaultContacts;
     }
