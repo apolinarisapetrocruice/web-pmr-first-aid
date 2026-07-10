@@ -51,11 +51,7 @@ async function syncFromFirebase(username) {
       localStorage.setItem(`user_profile_${username}`, JSON.stringify(profileSnap.val()));
     }
     
-    // 2. Emergency Contacts
-    const contactsSnap = await promiseTimeout(get(child(dbRef, `emergency_contacts/${username}`)), 3000);
-    if (contactsSnap.exists()) {
-      localStorage.setItem(KEY_EMERGENCY_CONTACTS, JSON.stringify(contactsSnap.val()));
-    }
+    // 2. Emergency Contacts (Handled globally in syncGlobalDataFromFirebase)
     
     // 3. Read Subtopics
     const subtopicsSnap = await promiseTimeout(get(child(dbRef, `read_subtopics/${username}`)), 3000);
@@ -89,6 +85,11 @@ async function syncGlobalDataFromFirebase() {
     const quizzesSnap = await promiseTimeout(get(child(dbRef, 'quiz_questions')), 3000);
     if (quizzesSnap.exists()) {
       localStorage.setItem(KEY_QUIZ_QUESTIONS, JSON.stringify(quizzesSnap.val()));
+    }
+
+    const contactsSnap = await promiseTimeout(get(child(dbRef, 'emergency_contacts')), 3000);
+    if (contactsSnap.exists()) {
+      localStorage.setItem(KEY_EMERGENCY_CONTACTS, JSON.stringify(contactsSnap.val()));
     }
     
     window.dispatchEvent(new Event('auth-changed'));
@@ -132,9 +133,9 @@ function syncProfileToFirebase(username, profile) {
   }
 }
 
-function syncContactsToFirebase(username, contacts) {
+function syncContactsToFirebase(contacts) {
   try {
-    set(ref(db, `emergency_contacts/${username}`), contacts);
+    set(ref(db, 'emergency_contacts'), contacts);
   } catch (e) {
     console.error("Failed to sync contacts to Firebase", e);
   }
@@ -433,10 +434,7 @@ export const localStorageService = {
 
   saveEmergencyContacts(contacts) {
     localStorage.setItem(KEY_EMERGENCY_CONTACTS, JSON.stringify(contacts));
-    const currentUser = this.getCurrentUser();
-    if (currentUser) {
-      syncContactsToFirebase(currentUser.username, contacts);
-    }
+    syncContactsToFirebase(contacts);
   },
 
   addEmergencyContact(contact) {
