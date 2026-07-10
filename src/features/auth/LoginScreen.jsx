@@ -9,7 +9,7 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Custom Welcome Popup State
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -17,7 +17,7 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!username.trim() || !password) {
       setError('Username/Email dan Password wajib diisi.');
       return;
@@ -51,8 +51,8 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
             <p className="custom-popup-message">
               Halo, <strong>{loggedInUser?.name}</strong>! Anda berhasil masuk ke sistem PMR First Aid.
             </p>
-            <button 
-              className="custom-popup-btn" 
+            <button
+              className="custom-popup-btn"
               onClick={() => {
                 setShowWelcomePopup(false);
                 localStorageService.setSessionUser(loggedInUser);
@@ -68,7 +68,11 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
       <div className="auth-card-wrapper fade-in">
         <div className="auth-brand-header">
           <div className="brand-logo-circle">
-            <ShieldAlert size={36} color="var(--surface-white)" />
+            <img
+              src="/assets/images/logo.png"
+              alt="Logo PMI"
+              className="brand-logo"
+            />
           </div>
           <h1 className="brand-title">PMR FIRST AID</h1>
           <p className="brand-subtitle">Palang Merah Remaja Indonesia</p>
