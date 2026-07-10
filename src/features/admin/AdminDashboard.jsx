@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ShieldAlert, 
-  BookOpen, 
-  Video, 
-  HelpCircle, 
-  Users, 
-  Phone, 
-  TrendingUp, 
-  LogOut, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  X, 
-  Save, 
-  FileText, 
-  Clock, 
+import {
+  ShieldAlert,
+  BookOpen,
+  Video,
+  HelpCircle,
+  Users,
+  Phone,
+  TrendingUp,
+  LogOut,
+  Plus,
+  Edit,
+  Trash2,
+  X,
+  Save,
+  FileText,
+  Clock,
   Award,
   ChevronRight,
   Info
@@ -24,7 +24,7 @@ import './AdminDashboard.css';
 
 export default function AdminDashboard({ onLogout }) {
   const [activeTab, setActiveTab] = useState('summary');
-  
+
   // Data States
   const [students, setStudents] = useState([]);
   const [users, setUsers] = useState([]);
@@ -56,7 +56,7 @@ export default function AdminDashboard({ onLogout }) {
   const loadAllData = () => {
     const rawUsers = localStorageService.getUsers();
     setUsers(rawUsers);
-    
+
     // Students are users with student role
     const studList = rawUsers.filter(u => u.role === 'student').map(u => {
       // Load progress
@@ -66,7 +66,7 @@ export default function AdminDashboard({ onLogout }) {
       if (data) {
         try {
           profile = JSON.parse(data);
-        } catch (_) {}
+        } catch (_) { }
       }
       return { ...u, ...profile };
     });
@@ -91,7 +91,7 @@ export default function AdminDashboard({ onLogout }) {
   const handleOpenAdd = (type) => {
     setEditingItem(null);
     setModalType(type);
-    
+
     // Reset forms
     if (type === 'material') {
       setFormMaterial({ title: '', subtitle: '', content: '', imageAssets: '' });
@@ -200,10 +200,10 @@ export default function AdminDashboard({ onLogout }) {
     e.preventDefault();
 
     if (modalType === 'material') {
-      const imagesArr = formMaterial.imageAssets 
+      const imagesArr = formMaterial.imageAssets
         ? formMaterial.imageAssets.split(',').map(s => s.trim()).filter(Boolean)
         : [];
-      
+
       if (editingItem) {
         localStorageService.updateLearningMaterial({
           ...editingItem,
@@ -221,8 +221,8 @@ export default function AdminDashboard({ onLogout }) {
           imageAssets: imagesArr
         });
       }
-    } 
-    
+    }
+
     else if (modalType === 'video') {
       if (editingItem) {
         localStorageService.updatePracticeVideo({
@@ -243,8 +243,8 @@ export default function AdminDashboard({ onLogout }) {
           durationText: formVideo.durationText
         });
       }
-    } 
-    
+    }
+
     else if (modalType === 'quiz') {
       const opts = [formQuiz.opt0, formQuiz.opt1, formQuiz.opt2, formQuiz.opt3].map(o => o.trim());
       if (opts.some(o => !o)) {
@@ -272,8 +272,8 @@ export default function AdminDashboard({ onLogout }) {
           ...quizData
         });
       }
-    } 
-    
+    }
+
     else if (modalType === 'contact') {
       if (editingItem) {
         localStorageService.updateEmergencyContact({
@@ -290,11 +290,11 @@ export default function AdminDashboard({ onLogout }) {
           description: formContact.description
         });
       }
-    } 
-    
+    }
+
     else if (modalType === 'user') {
       const cleanUsername = formUser.username.trim().toLowerCase();
-      
+
       if (editingItem) {
         // Edit User
         const updatedUsers = users.map(u => {
@@ -358,17 +358,17 @@ export default function AdminDashboard({ onLogout }) {
             <h3 className="custom-popup-title">Konfirmasi Hapus</h3>
             <p className="custom-popup-message">Apakah anda yakin ingin menghapus bagian ini?</p>
             <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-              <button 
+              <button
                 type="button"
-                className="custom-popup-btn" 
+                className="custom-popup-btn"
                 style={{ backgroundColor: 'var(--text-gray)', boxShadow: 'none', flex: 1 }}
                 onClick={cancelDelete}
               >
                 Tidak
               </button>
-              <button 
+              <button
                 type="button"
-                className="custom-popup-btn" 
+                className="custom-popup-btn"
                 style={{ backgroundColor: 'var(--primary-red)', flex: 1 }}
                 onClick={confirmDelete}
               >
@@ -390,8 +390,8 @@ export default function AdminDashboard({ onLogout }) {
             <p className="custom-popup-message">
               Anda akan keluar dari dashboard Admin PMR First Aid. Sampai jumpa kembali!
             </p>
-            <button 
-              className="custom-popup-btn" 
+            <button
+              className="custom-popup-btn"
               onClick={() => {
                 setShowLogoutPopup(false);
                 confirmLogout();
@@ -406,7 +406,11 @@ export default function AdminDashboard({ onLogout }) {
       <aside className="admin-sidebar">
         <div className="admin-logo">
           <div className="logo-box admin-logo-box">
-            <ShieldAlert size={22} />
+            <img
+              src="/assets/images/logo.png"
+              alt="Logo PMI"
+              className="brand-logo"
+            />
           </div>
           <div>
             <h1 className="logo-title">PMR ADMIN</h1>
@@ -415,15 +419,15 @@ export default function AdminDashboard({ onLogout }) {
         </div>
 
         <nav className="admin-nav">
-          <button 
+          <button
             className={`admin-nav-btn ${activeTab === 'summary' ? 'active' : ''}`}
             onClick={() => setActiveTab('summary')}
           >
             <TrendingUp size={18} />
             <span>Ringkasan</span>
           </button>
-          
-          <button 
+
+          <button
             className={`admin-nav-btn ${activeTab === 'materials' ? 'active' : ''}`}
             onClick={() => setActiveTab('materials')}
           >
@@ -431,7 +435,7 @@ export default function AdminDashboard({ onLogout }) {
             <span>Kelola Materi</span>
           </button>
 
-          <button 
+          <button
             className={`admin-nav-btn ${activeTab === 'videos' ? 'active' : ''}`}
             onClick={() => setActiveTab('videos')}
           >
@@ -439,7 +443,7 @@ export default function AdminDashboard({ onLogout }) {
             <span>Kelola Video</span>
           </button>
 
-          <button 
+          <button
             className={`admin-nav-btn ${activeTab === 'quizzes' ? 'active' : ''}`}
             onClick={() => setActiveTab('quizzes')}
           >
@@ -447,7 +451,7 @@ export default function AdminDashboard({ onLogout }) {
             <span>Kelola Kuis</span>
           </button>
 
-          <button 
+          <button
             className={`admin-nav-btn ${activeTab === 'contacts' ? 'active' : ''}`}
             onClick={() => setActiveTab('contacts')}
           >
@@ -455,7 +459,7 @@ export default function AdminDashboard({ onLogout }) {
             <span>Kontak Darurat</span>
           </button>
 
-          <button 
+          <button
             className={`admin-nav-btn ${activeTab === 'students' ? 'active' : ''}`}
             onClick={() => {
               setActiveTab('students');
@@ -466,7 +470,7 @@ export default function AdminDashboard({ onLogout }) {
             <span>Progres Siswa</span>
           </button>
 
-          <button 
+          <button
             className={`admin-nav-btn ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
@@ -504,7 +508,7 @@ export default function AdminDashboard({ onLogout }) {
         </header>
 
         <div className="admin-content-body">
-          
+
           {/* ==================== SUMMARY TAB ==================== */}
           {activeTab === 'summary' && (
             <div className="summary-tab fade-in">
@@ -564,7 +568,7 @@ export default function AdminDashboard({ onLogout }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {students.sort((a,b) => b.xp - a.xp).slice(0, 5).map(s => (
+                        {students.sort((a, b) => b.xp - a.xp).slice(0, 5).map(s => (
                           <tr key={s.id}>
                             <td className="font-bold">{s.name}</td>
                             <td>{s.username}</td>
@@ -703,7 +707,7 @@ export default function AdminDashboard({ onLogout }) {
                       </tr>
                     </thead>
                     <tbody>
-                      {quizzes.sort((a,b) => (a.part - b.part) || (a.number - b.number)).map(q => (
+                      {quizzes.sort((a, b) => (a.part - b.part) || (a.number - b.number)).map(q => (
                         <tr key={q.id}>
                           <td>
                             <span className="part-badge">Part {q.part}</span>
@@ -801,7 +805,7 @@ export default function AdminDashboard({ onLogout }) {
                             <td><span className="xp-badge">{s.xp} XP</span></td>
                             <td><span className="material-badge">{s.readMaterials ? s.readMaterials.length : 0} / 9</span></td>
                             <td>
-                              <button 
+                              <button
                                 className="btn-detail"
                                 onClick={() => setSelectedStudentHistory(s)}
                               >
@@ -894,8 +898,8 @@ export default function AdminDashboard({ onLogout }) {
                           <td>
                             <div className="actions-wrap">
                               <button className="btn-edit" onClick={() => handleOpenEdit('user', u)}><Edit size={14} /> Edit</button>
-                              <button 
-                                className="btn-delete" 
+                              <button
+                                className="btn-delete"
                                 onClick={() => handleDeleteClick('user', u.id)}
                                 disabled={u.username === 'admin'}
                                 style={{ opacity: u.username === 'admin' ? 0.4 : 1, cursor: u.username === 'admin' ? 'not-allowed' : 'pointer' }}
@@ -922,15 +926,15 @@ export default function AdminDashboard({ onLogout }) {
           <form className="modal-content admin-modal" onSubmit={handleSave}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-gray)', paddingBottom: '12px' }}>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 900 }}>
-                {editingItem ? 'Edit ' : 'Tambah '} 
+                {editingItem ? 'Edit ' : 'Tambah '}
                 {modalType === 'material' && 'Materi Belajar'}
                 {modalType === 'video' && 'Video Peraga'}
                 {modalType === 'quiz' && 'Soal Kuis'}
                 {modalType === 'contact' && 'Kontak Darurat'}
                 {modalType === 'user' && 'Akun Pengguna'}
               </h3>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-gray)' }}
                 onClick={() => setShowModal(false)}
               >
@@ -939,46 +943,46 @@ export default function AdminDashboard({ onLogout }) {
             </div>
 
             <div className="modal-form-fields">
-              
+
               {/* MATERIAL FORM */}
               {modalType === 'material' && (
                 <>
                   <div className="form-group">
                     <label className="form-label">Judul Materi *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formMaterial.title}
                       onChange={(e) => setFormMaterial({ ...formMaterial, title: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Subjudul *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formMaterial.subtitle}
                       onChange={(e) => setFormMaterial({ ...formMaterial, subtitle: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Konten Materi (Gunakan \n untuk baris baru) *</label>
-                    <textarea 
-                      className="form-input" 
+                    <textarea
+                      className="form-input"
                       style={{ height: '140px', resize: 'vertical' }}
                       value={formMaterial.content}
                       onChange={(e) => setFormMaterial({ ...formMaterial, content: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Aset Gambar (Pisahkan dengan koma) - Opsional</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="assets/images/materi/image_1.png, assets/images/materi/image_2.png"
-                      className="form-input" 
+                      className="form-input"
                       value={formMaterial.imageAssets}
                       onChange={(e) => setFormMaterial({ ...formMaterial, imageAssets: e.target.value })}
                     />
@@ -991,51 +995,51 @@ export default function AdminDashboard({ onLogout }) {
                 <>
                   <div className="form-group">
                     <label className="form-label">Judul Video *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formVideo.title}
                       onChange={(e) => setFormVideo({ ...formVideo, title: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Deskripsi *</label>
-                    <textarea 
-                      className="form-input" 
+                    <textarea
+                      className="form-input"
                       style={{ height: '80px', resize: 'vertical' }}
                       value={formVideo.description}
                       onChange={(e) => setFormVideo({ ...formVideo, description: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">URL Video (Google Drive Link) *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formVideo.videoUrl}
                       onChange={(e) => setFormVideo({ ...formVideo, videoUrl: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">URL Folder Drive Pendukung</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formVideo.folderUrl}
                       onChange={(e) => setFormVideo({ ...formVideo, folderUrl: e.target.value })}
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Durasi Video (Contoh: 05:30) *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formVideo.durationText}
                       onChange={(e) => setFormVideo({ ...formVideo, durationText: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                 </>
@@ -1046,54 +1050,54 @@ export default function AdminDashboard({ onLogout }) {
                 <>
                   <div className="form-group">
                     <label className="form-label">Pertanyaan (Teks Soal) *</label>
-                    <textarea 
-                      className="form-input" 
+                    <textarea
+                      className="form-input"
                       style={{ height: '60px', resize: 'vertical' }}
                       value={formQuiz.question}
                       onChange={(e) => setFormQuiz({ ...formQuiz, question: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
-                  
+
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div className="form-group">
                       <label className="form-label">Pilihan 1 *</label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
+                      <input
+                        type="text"
+                        className="form-input"
                         value={formQuiz.opt0}
                         onChange={(e) => setFormQuiz({ ...formQuiz, opt0: e.target.value })}
-                        required 
+                        required
                       />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Pilihan 2 *</label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
+                      <input
+                        type="text"
+                        className="form-input"
                         value={formQuiz.opt1}
                         onChange={(e) => setFormQuiz({ ...formQuiz, opt1: e.target.value })}
-                        required 
+                        required
                       />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Pilihan 3 *</label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
+                      <input
+                        type="text"
+                        className="form-input"
                         value={formQuiz.opt2}
                         onChange={(e) => setFormQuiz({ ...formQuiz, opt2: e.target.value })}
-                        required 
+                        required
                       />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Pilihan 4 *</label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
+                      <input
+                        type="text"
+                        className="form-input"
                         value={formQuiz.opt3}
                         onChange={(e) => setFormQuiz({ ...formQuiz, opt3: e.target.value })}
-                        required 
+                        required
                       />
                     </div>
                   </div>
@@ -1101,8 +1105,8 @@ export default function AdminDashboard({ onLogout }) {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div className="form-group">
                       <label className="form-label">Jawaban Benar *</label>
-                      <select 
-                        className="form-input" 
+                      <select
+                        className="form-input"
                         value={formQuiz.correctAnswerIndex}
                         onChange={(e) => setFormQuiz({ ...formQuiz, correctAnswerIndex: parseInt(e.target.value) })}
                       >
@@ -1114,8 +1118,8 @@ export default function AdminDashboard({ onLogout }) {
                     </div>
                     <div className="form-group">
                       <label className="form-label">Bagian Kuis (Part) *</label>
-                      <select 
-                        className="form-input" 
+                      <select
+                        className="form-input"
                         value={formQuiz.part}
                         onChange={(e) => setFormQuiz({ ...formQuiz, part: parseInt(e.target.value) })}
                       >
@@ -1127,23 +1131,23 @@ export default function AdminDashboard({ onLogout }) {
 
                   <div className="form-group">
                     <label className="form-label">Nomor Soal *</label>
-                    <input 
-                      type="number" 
-                      className="form-input" 
+                    <input
+                      type="number"
+                      className="form-input"
                       value={formQuiz.number}
                       onChange={(e) => setFormQuiz({ ...formQuiz, number: parseInt(e.target.value) })}
-                      required 
+                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Penjelasan Jawaban *</label>
-                    <textarea 
-                      className="form-input" 
+                    <textarea
+                      className="form-input"
                       style={{ height: '60px', resize: 'vertical' }}
                       value={formQuiz.explanation}
                       onChange={(e) => setFormQuiz({ ...formQuiz, explanation: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                 </>
@@ -1154,29 +1158,29 @@ export default function AdminDashboard({ onLogout }) {
                 <>
                   <div className="form-group">
                     <label className="form-label">Nama Instansi / Layanan *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formContact.serviceName}
                       onChange={(e) => setFormContact({ ...formContact, serviceName: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Nomor Telepon *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formContact.phoneNumber}
                       onChange={(e) => setFormContact({ ...formContact, phoneNumber: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Keterangan (Opsional)</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formContact.description}
                       onChange={(e) => setFormContact({ ...formContact, description: e.target.value })}
                     />
@@ -1189,39 +1193,39 @@ export default function AdminDashboard({ onLogout }) {
                 <>
                   <div className="form-group">
                     <label className="form-label">Nama Lengkap *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formUser.name}
                       onChange={(e) => setFormUser({ ...formUser, name: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Username atau Email *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formUser.username}
                       onChange={(e) => setFormUser({ ...formUser, username: e.target.value })}
                       disabled={!!editingItem} // Cannot change username on edit
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Kata Sandi (Password) *</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       value={formUser.password}
                       onChange={(e) => setFormUser({ ...formUser, password: e.target.value })}
-                      required 
+                      required
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Peran (Role) *</label>
-                    <select 
-                      className="form-input" 
+                    <select
+                      className="form-input"
                       value={formUser.role}
                       onChange={(e) => setFormUser({ ...formUser, role: e.target.value })}
                       disabled={editingItem && editingItem.username === 'admin'} // Cannot edit role of primary admin

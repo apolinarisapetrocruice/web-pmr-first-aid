@@ -91,7 +91,7 @@ export default function Layout() {
         <div className="sidebar-logo">
           <div className="logo-box">
             <img
-              src="/assets/images/logo.png"
+              src="/assets/images/logo2.png"
               alt="Logo PMI"
               className="brand-logo"
             />
