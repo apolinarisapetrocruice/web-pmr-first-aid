@@ -85,7 +85,7 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
 
         <div className="auth-form-container">
           <h2 className="auth-title">Masuk ke Akun Anda</h2>
-          <p className="auth-desc">Silakan masukkan username/email dan kata sandi Anda.</p>
+          <p className="auth-desc">Silakan masukkan username dan kata sandi Anda.</p>
 
           {error && (
             <div className="auth-error-banner slide-up">
@@ -96,12 +96,12 @@ export default function LoginScreen({ onLoginSuccess, onGoToRegister }) {
 
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="auth-input-group">
-              <label className="auth-input-label">Username atau Email</label>
+              <label className="auth-input-label">Username</label>
               <div className="auth-input-wrapper">
                 <User size={18} className="auth-input-icon" />
                 <input
                   type="text"
-                  placeholder="Masukkan username atau email"
+                  placeholder="Masukkan username"
                   className="auth-input-field"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}

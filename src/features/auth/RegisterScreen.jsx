@@ -8,10 +8,10 @@ export default function RegisterScreen({ onRegisterSuccess, onGoToLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ export default function RegisterScreen({ onRegisterSuccess, onGoToLogin }) {
       try {
         const res = await localStorageService.registerUser(name, username, password);
         setIsLoading(false);
-        
+
         if (res.success) {
           setSuccessMsg('Akun berhasil dibuat! Mengalihkan ke halaman login...');
           setTimeout(() => {
@@ -107,12 +107,12 @@ export default function RegisterScreen({ onRegisterSuccess, onGoToLogin }) {
 
             {/* Username */}
             <div className="auth-input-group">
-              <label className="auth-input-label">Username atau Email</label>
+              <label className="auth-input-label">Username</label>
               <div className="auth-input-wrapper">
                 <User size={18} className="auth-input-icon" />
                 <input
                   type="text"
-                  placeholder="Masukkan username atau email"
+                  placeholder="Masukkan username"
                   className="auth-input-field"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
